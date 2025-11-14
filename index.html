@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nebula Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <h1>Welcome back, <span id="user-name">Guest</span></h1>
+      <p id="datetime"></p>
+    </div>
+
+    <div class="header-right">
+      <button id="login-btn" class="small primary">Login</button>
+      <button id="register-btn" class="small primary">Register</button>
+      <button id="logout-btn" class="small danger hidden">Logout</button>
+      <span class="user-display hidden" id="user-display"></span>
+
+      <!-- NEW ACCOUNT BUTTON -->
+      <button id="account-btn" class="small primary" style="display:none;">Account</button>
+
+      <button id="reset-btn" class="small danger">Delete Data</button>
+      <button id="theme-toggle">☀️</button>
+    </div>
+  </header>
+
+  <!-- NAVIGATION -->
+  <nav>
+    <button class="nav-btn active" data-section="dashboard">Dashboard</button>
+    <button class="nav-btn" data-section="tasks">Tasks</button>
+    <button class="nav-btn" data-section="notes">Notes</button>
+  </nav>
+
+  <main>
+    <!-- ===================== DASHBOARD ===================== -->
+    <section id="dashboard" class="active-section">
+      <h2>Overview</h2>
+
+      <div class="dashboard-cards">
+        <div class="dash-card"><h3>Total Tasks</h3><p id="task-count">0</p></div>
+        <div class="dash-card"><h3>Total Notes</h3><p id="note-count">0</p></div>
+        <div class="dash-card"><h3>Completed Tasks</h3><p id="completed-count">0</p></div>
+      </div>
+
+      <!-- PROGRESS RING -->
+      <div class="progress-container">
+        <h3>Task Completion</h3>
+        <div class="progress-ring">
+          <svg viewBox="0 0 120 120">
+            <defs>
+              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00d4ff" />
+                <stop offset="100%" stop-color="#009dff" />
+              </linearGradient>
+            </defs>
+            <circle class="bg" cx="60" cy="60" r="54"></circle>
+            <circle class="progress" cx="60" cy="60" r="54"></circle>
+          </svg>
+          <span id="progress-text">0%</span>
+        </div>
+      </div>
+
+      <!-- CHART -->
+      <div class="chart-container">
+        <canvas id="dashboardChart"></canvas>
+      </div>
+    </section>
+
+    <!-- ===================== TASKS ===================== -->
+    <section id="tasks">
+      <h2>Tasks</h2>
+
+      <form id="task-form">
+        <input type="text" id="task-input" placeholder="Add a new task..." required />
+        <select id="task-priority">
+          <option value="low">Low</option>
+          <option value="medium" selected>Medium</option>
+          <option value="high">High</option>
+        </select>
+        <button type="submit">Add</button>
+      </form>
+
+      <!-- FILTER -->
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="low">Low</button>
+        <button class="filter-btn" data-filter="medium">Medium</button>
+        <button class="filter-btn" data-filter="high">High</button>
+      </div>
+
+      <ul id="task-list"></ul>
+    </section>
+
+    <!-- ===================== NOTES ===================== -->
+    <section id="notes">
+      <h2>Notes</h2>
+      <form id="note-form">
+        <input type="text" id="note-title" placeholder="Title" required />
+        <textarea id="note-content" placeholder="Write a note..." required></textarea>
+        <button type="submit">Save</button>
+      </form>
+
+      <div id="note-list"></div>
+    </section>
+
+  </main>
+
+  <!-- ===================== LOGIN MODAL ===================== -->
+  <div id="login-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Login</h3>
+      <input type="text" id="login-email" placeholder="Email" />
+      <input type="password" id="login-password" placeholder="Password" />
+      <div class="modal-actions">
+        <button id="login-submit" class="primary">Login</button>
+        <button class="close-modal danger">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== REGISTER MODAL ===================== -->
+  <div id="register-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Register</h3>
+
+      <input type="text" id="register-name" placeholder="Name (optional)" />
+      <input type="text" id="register-email" placeholder="Email" />
+      <input type="password" id="register-password" placeholder="Password" />
+
+      <div class="modal-actions">
+        <button id="register-submit" class="primary">Register</button>
+        <button class="close-modal danger">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ACCOUNT MODAL ===================== -->
+  <div id="account-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Account Settings</h3>
+
+      <label>Avatar</label>
+      <input type="file" id="profile-avatar" accept="image/*" />
+
+      <label>Name</label>
+      <input type="text" id="profile-name" />
+
+      <label>Email</label>
+      <input type="text" id="profile-email" />
+
+      <label>New Password</label>
+      <input type="password" id="profile-password" placeholder="Leave empty to keep current" />
+
+      <label>Language</label>
+      <select id="profile-language">
+        <option value="en">English</option>
+        <option value="es">Español</option>
+      </select>
+
+      <label>Time Format</label>
+      <select id="profile-timeformat">
+        <option value="24">24h</option>
+        <option value="12">12h</option>
+      </select>
+
+      <hr style="margin:12px 0;">
+
+      <button id="save-profile" class="primary" style="width:100%;">Save Changes</button>
+
+      <br><br>
+
+      <h4>Export / Import</h4>
+      <button id="export-user" class="primary" style="width:100%;">Export My Data</button>
+      <input type="file" id="import-user-file" accept="application/json" />
+
+      <br><br>
+
+      <button id="delete-account" class="danger" style="width:100%;">Delete Account</button>
+
+      <div class="modal-actions">
+        <button id="close-account" class="danger">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-backdrop" class="modal-backdrop hidden"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
