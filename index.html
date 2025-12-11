@@ -4,194 +4,485 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Nebula Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
   <!-- HEADER -->
   <header>
-    <div class="header-left">
-      <h1>Welcome back, <span id="user-name">Guest</span></h1>
-      <p id="datetime"></p>
+    <div class="particles-container" id="particles-container"></div>
+    <div class="header-content">
+      <div class="header-left">
+        <button id="mobile-menu-btn" class="mobile-menu-btn">☰</button>
+        <h1>Welcome back, <span id="user-name">Guest</span>! ✨</h1>
+        <p id="datetime"></p>
+      </div>
+      <div class="header-right">
+        <div class="global-search-container">
+          <input type="text" id="global-search" placeholder="⌕ Search everything..." />
+        </div>
+        <div class="header-actions">
+          <button id="login-btn" class="btn btn-primary">Login</button>
+          <button id="register-btn" class="btn btn-primary">Register</button>
+          <span id="user-badge" class="user-badge hidden"></span>
+          <button id="logout-btn" class="btn btn-danger hidden">Logout</button>
+          <button id="account-btn" class="btn btn-primary hidden">⚙ Account</button>
+          <button id="reset-btn" class="btn btn-danger">⌫</button>
+          <button id="theme-toggle" class="theme-toggle">☀</button>
+        </div>
+      </div>
     </div>
-
-    <div class="header-right">
-      <button id="login-btn" class="small primary">Login</button>
-      <button id="register-btn" class="small primary">Register</button>
-      <button id="logout-btn" class="small danger hidden">Logout</button>
-      <span class="user-display hidden" id="user-display"></span>
-
-      <!-- NEW ACCOUNT BUTTON -->
-      <button id="account-btn" class="small primary" style="display:none;">Account</button>
-
-      <button id="reset-btn" class="small danger">Delete Data</button>
-      <button id="theme-toggle">☀️</button>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu">
+      <div class="mobile-menu-header">
+        <h3>Menu</h3>
+        <button id="mobile-menu-close" class="mobile-menu-close">✕</button>
+      </div>
+      <div class="mobile-menu-content">
+        <div class="mobile-menu-search">
+          <input type="text" id="mobile-search" placeholder="⌕ Search everything..." />
+        </div>
+        <div class="mobile-menu-actions">
+          <button id="mobile-login-btn" class="btn btn-primary">Login</button>
+          <button id="mobile-register-btn" class="btn btn-primary">Register</button>
+          <span id="mobile-user-badge" class="user-badge hidden"></span>
+          <button id="mobile-logout-btn" class="btn btn-danger hidden">Logout</button>
+          <button id="mobile-account-btn" class="btn btn-primary hidden">⚙ Account</button>
+          <button id="mobile-reset-btn" class="btn btn-danger">⌫ Reset</button>
+          <button id="mobile-theme-toggle" class="btn btn-primary">☀ Theme</button>
+        </div>
+      </div>
     </div>
   </header>
 
-  <!-- NAVIGATION -->
+  <!-- NAV -->
   <nav>
-    <button class="nav-btn active" data-section="dashboard">Dashboard</button>
-    <button class="nav-btn" data-section="tasks">Tasks</button>
-    <button class="nav-btn" data-section="notes">Notes</button>
+    <div class="nav-content">
+      <button class="nav-btn active" data-section="dashboard">◉ Dashboard</button>
+      <button class="nav-btn" data-section="tasks">✓ Tasks</button>
+      <button class="nav-btn" data-section="calendar">◐ Calendar</button>
+      <button class="nav-btn" data-section="notes">◈ Notes</button>
+      <button class="nav-btn" data-section="progress">◬ Progress</button>
+      <button class="nav-btn" data-section="calculator">◉ Calculator</button>
+    </div>
   </nav>
 
+  <!-- MAIN -->
   <main>
-    <!-- ===================== DASHBOARD ===================== -->
+    <!-- DASHBOARD -->
     <section id="dashboard" class="active-section">
-      <h2>Overview</h2>
-
-      <div class="dashboard-cards">
-        <div class="dash-card"><h3>Total Tasks</h3><p id="task-count">0</p></div>
-        <div class="dash-card"><h3>Total Notes</h3><p id="note-count">0</p></div>
-        <div class="dash-card"><h3>Completed Tasks</h3><p id="completed-count">0</p></div>
+      <div class="dashboard-header">
+        <h2>Overview</h2>
+        <button class="btn btn-widget-settings" id="widget-settings-btn">⚙ Customize Widgets</button>
       </div>
-
-      <!-- PROGRESS RING -->
-      <div class="progress-container">
-        <h3>Task Completion</h3>
-        <div class="progress-ring">
-          <svg viewBox="0 0 120 120">
-            <defs>
-              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#00d4ff" />
-                <stop offset="100%" stop-color="#009dff" />
-              </linearGradient>
-            </defs>
-            <circle class="bg" cx="60" cy="60" r="54"></circle>
-            <circle class="progress" cx="60" cy="60" r="54"></circle>
-          </svg>
-          <span id="progress-text">0%</span>
+      
+      <div class="widgets-container" id="widgets-container">
+        <div class="widget" data-widget-id="stat-total-tasks" data-widget-type="stat" data-widget-size="normal" draggable="true">
+          <div class="widget-header">
+            <h3>Total Tasks</h3>
+            <div class="widget-controls">
+              <button class="widget-btn size-btn" title="Change size">◬</button>
+              <button class="widget-btn hide-btn" title="Hide widget">◉</button>
+            </div>
+          </div>
+          <div class="widget-content">
+            <p id="task-count">0</p>
+          </div>
         </div>
-      </div>
 
-      <!-- CHART -->
-      <div class="chart-container">
-        <canvas id="dashboardChart"></canvas>
+        <div class="widget" data-widget-id="stat-completed" data-widget-type="stat" data-widget-size="normal" draggable="true">
+          <div class="widget-header">
+            <h3>Completed</h3>
+            <div class="widget-controls">
+              <button class="widget-btn size-btn" title="Change size">◬</button>
+              <button class="widget-btn hide-btn" title="Hide widget">◉</button>
+            </div>
+          </div>
+          <div class="widget-content">
+            <p id="completed-count">0</p>
+          </div>
+        </div>
+
+        <div class="widget" data-widget-id="stat-notes" data-widget-type="stat" data-widget-size="normal" draggable="true">
+          <div class="widget-header">
+            <h3>Total Notes</h3>
+            <div class="widget-controls">
+              <button class="widget-btn size-btn" title="Change size">◬</button>
+              <button class="widget-btn hide-btn" title="Hide widget">◉</button>
+            </div>
+          </div>
+          <div class="widget-content">
+            <p id="note-count">0</p>
+          </div>
+        </div>
+
+        <div class="widget" data-widget-id="stat-avg-time" data-widget-type="stat" data-widget-size="normal" draggable="true">
+          <div class="widget-header">
+            <h3>Avg Completion Time</h3>
+            <div class="widget-controls">
+              <button class="widget-btn size-btn" title="Change size">◬</button>
+              <button class="widget-btn hide-btn" title="Hide widget">◉</button>
+            </div>
+          </div>
+          <div class="widget-content">
+            <p id="avg-completion-time">0 days</p>
+          </div>
+        </div>
+
+        <div class="widget" data-widget-id="stat-streak" data-widget-type="stat" data-widget-size="normal" draggable="true">
+          <div class="widget-header">
+            <h3>Productivity Streak</h3>
+            <div class="widget-controls">
+              <button class="widget-btn size-btn" title="Change size">◬</button>
+              <button class="widget-btn hide-btn" title="Hide widget">◉</button>
+            </div>
+          </div>
+          <div class="widget-content">
+            <p id="productivity-streak">0 days</p>
+          </div>
+        </div>
+
+        <div class="widget" data-widget-id="stat-today" data-widget-type="stat" data-widget-size="normal" draggable="true">
+          <div class="widget-header">
+            <h3>Tasks Today</h3>
+            <div class="widget-controls">
+              <button class="widget-btn size-btn" title="Change size">◬</button>
+              <button class="widget-btn hide-btn" title="Hide widget">◉</button>
+            </div>
+          </div>
+          <div class="widget-content">
+            <p id="tasks-today">0</p>
+          </div>
+        </div>
+
+        <div class="widget" data-widget-id="chart-completion" data-widget-type="chart" data-widget-size="normal" draggable="true">
+          <div class="widget-header">
+            <h3>Task Completion</h3>
+            <div class="widget-controls">
+              <button class="widget-btn size-btn" title="Change size">◬</button>
+              <button class="widget-btn hide-btn" title="Hide widget">◉</button>
+            </div>
+          </div>
+          <div class="widget-content">
+            <div class="progress-ring">
+              <svg viewBox="0 0 200 200" width="200" height="200">
+                <defs>
+                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#6366f1" />
+                    <stop offset="50%" stop-color="#8b5cf6" />
+                    <stop offset="100%" stop-color="#ec4899" />
+                  </linearGradient>
+                </defs>
+                <circle class="bg" cx="100" cy="100" r="90"></circle>
+                <circle class="progress" cx="100" cy="100" r="90"></circle>
+              </svg>
+              <span class="progress-text" id="progress-text">0%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="widget" data-widget-id="chart-distribution" data-widget-type="chart" data-widget-size="normal" draggable="true">
+          <div class="widget-header">
+            <h3>Task Distribution</h3>
+            <div class="widget-controls">
+              <button class="widget-btn size-btn" title="Change size">◬</button>
+              <button class="widget-btn hide-btn" title="Hide widget">◉</button>
+            </div>
+          </div>
+          <div class="widget-content">
+            <canvas id="dashboardChart"></canvas>
+          </div>
+        </div>
+
+        <div class="widget" data-widget-id="chart-priority" data-widget-type="chart" data-widget-size="normal" draggable="true">
+          <div class="widget-header">
+            <h3>Priority Distribution</h3>
+            <div class="widget-controls">
+              <button class="widget-btn size-btn" title="Change size">◬</button>
+              <button class="widget-btn hide-btn" title="Hide widget">◉</button>
+            </div>
+          </div>
+          <div class="widget-content">
+            <canvas id="priorityChart"></canvas>
+          </div>
+        </div>
+
+        <div class="widget" data-widget-id="chart-productivity" data-widget-type="chart" data-widget-size="wide" draggable="true">
+          <div class="widget-header">
+            <h3>Productivity Timeline (Last 7 Days)</h3>
+            <div class="widget-controls">
+              <button class="widget-btn size-btn" title="Change size">◬</button>
+              <button class="widget-btn hide-btn" title="Hide widget">◉</button>
+            </div>
+          </div>
+          <div class="widget-content">
+            <canvas id="productivityChart"></canvas>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- ===================== TASKS ===================== -->
+    <!-- TASKS -->
     <section id="tasks">
       <h2>Tasks</h2>
 
-      <form id="task-form">
-        <input type="text" id="task-input" placeholder="Add a new task..." required />
-        <select id="task-priority">
-          <option value="low">Low</option>
-          <option value="medium" selected>Medium</option>
-          <option value="high">High</option>
-        </select>
-        <button type="submit">Add</button>
-      </form>
-
-      <!-- FILTER -->
-      <div class="filter-buttons">
-        <button class="filter-btn active" data-filter="all">All</button>
-        <button class="filter-btn" data-filter="low">Low</button>
-        <button class="filter-btn" data-filter="medium">Medium</button>
-        <button class="filter-btn" data-filter="high">High</button>
+      <div class="form-section">
+        <form class="task-form" id="task-form">
+          <div class="input-group">
+            <input type="text" id="task-input" placeholder="Add a new task..." required />
+          </div>
+          <select id="task-priority">
+            <option value="low">🟢 Low</option>
+            <option value="medium" selected>🟡 Medium</option>
+            <option value="high">🔴 High</option>
+          </select>
+          <input type="text" id="task-category" placeholder="Category (optional)" list="category-list" />
+          <datalist id="category-list"></datalist>
+          <input type="text" id="task-project" placeholder="Project (optional)" list="project-list" />
+          <datalist id="project-list"></datalist>
+          <input type="date" id="task-due-date" />
+          <button type="submit" class="btn btn-success">Add Task</button>
+        </form>
       </div>
 
-      <ul id="task-list"></ul>
+      <div class="search-box">
+        <input type="text" id="task-search" placeholder="Search tasks..." />
+      </div>
+
+      <div class="filter-section">
+        <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="low">◉ Low</button>
+            <button class="filter-btn" data-filter="medium">◐ Medium</button>
+            <button class="filter-btn" data-filter="high">◬ High</button>
+      </div>
+
+      <div class="filter-section">
+        <button class="filter-btn date-filter active" data-date-filter="all">All Time</button>
+        <button class="filter-btn date-filter" data-date-filter="today">Today</button>
+        <button class="filter-btn date-filter" data-date-filter="week">This Week</button>
+        <button class="filter-btn date-filter" data-date-filter="month">This Month</button>
+        <button class="filter-btn date-filter" data-date-filter="overdue">Overdue</button>
+      </div>
+
+      <div class="filter-section">
+        <select id="category-filter" class="filter-select">
+          <option value="all">All Categories</option>
+        </select>
+        <select id="project-filter" class="filter-select">
+          <option value="all">All Projects</option>
+        </select>
+      </div>
+
+      <ul class="task-list" id="task-list"></ul>
     </section>
 
-    <!-- ===================== NOTES ===================== -->
+    <!-- CALENDAR -->
+    <section id="calendar">
+      <h2>Calendar</h2>
+
+      <div class="calendar-controls">
+        <button class="btn btn-primary" id="prev-month">← Previous</button>
+        <h3 id="calendar-month-year"></h3>
+        <button class="btn btn-primary" id="next-month">Next →</button>
+      </div>
+
+      <div class="calendar-container">
+        <div class="calendar-grid" id="calendar-grid"></div>
+      </div>
+
+      <div class="calendar-legend">
+        <div class="legend-item">
+          <span class="legend-color overdue"></span>
+          <span>Overdue</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color today"></span>
+          <span>Today</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color has-tasks"></span>
+          <span>Has Tasks</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- NOTES -->
     <section id="notes">
       <h2>Notes</h2>
-      <form id="note-form">
-        <input type="text" id="note-title" placeholder="Title" required />
-        <textarea id="note-content" placeholder="Write a note..." required></textarea>
-        <button type="submit">Save</button>
-      </form>
 
-      <div id="note-list"></div>
+      <div class="form-section">
+        <form class="note-form" id="note-form">
+          <input type="text" id="note-title" placeholder="Note title..." required />
+          <textarea id="note-content" placeholder="Write your note..." required></textarea>
+          <input type="text" id="note-category" placeholder="Category (optional)" list="note-category-list" />
+          <datalist id="note-category-list"></datalist>
+          <button type="submit" class="btn btn-success">Save Note</button>
+        </form>
+      </div>
+
+      <div class="search-box">
+        <input type="text" id="note-search" placeholder="Search notes..." />
+      </div>
+
+      <div class="notes-grid" id="note-list"></div>
     </section>
 
+    <!-- PROGRESS -->
+    <section id="progress">
+      <h2>Progress & Achievements</h2>
+
+      <div class="progress-header">
+        <div class="progress-stats-grid">
+          <div class="progress-stat-card">
+            <div class="progress-stat-icon">◐</div>
+            <div class="progress-stat-content">
+              <h3>This Week</h3>
+              <p class="progress-stat-value" id="progress-week">0</p>
+              <span class="progress-stat-label">tasks completed</span>
+            </div>
+          </div>
+          <div class="progress-stat-card">
+            <div class="progress-stat-icon">◉</div>
+            <div class="progress-stat-content">
+              <h3>This Month</h3>
+              <p class="progress-stat-value" id="progress-month">0</p>
+              <span class="progress-stat-label">tasks completed</span>
+            </div>
+          </div>
+          <div class="progress-stat-card">
+            <div class="progress-stat-icon">◬</div>
+            <div class="progress-stat-content">
+              <h3>Completion Rate</h3>
+              <p class="progress-stat-value" id="progress-rate">0%</p>
+              <span class="progress-stat-label">overall</span>
+            </div>
+          </div>
+          <div class="progress-stat-card">
+            <div class="progress-stat-icon">◈</div>
+            <div class="progress-stat-content">
+              <h3>Best Streak</h3>
+              <p class="progress-stat-value" id="progress-best-streak">0</p>
+              <span class="progress-stat-label">days</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="progress-charts-section">
+        <div class="widget" data-widget-id="chart-progress-timeline" data-widget-type="chart" data-widget-size="wide" draggable="true">
+          <div class="widget-header">
+            <h3>Progress Timeline (Last 30 Days)</h3>
+            <div class="widget-controls">
+              <button class="widget-btn size-btn" title="Change size">◬</button>
+              <button class="widget-btn hide-btn" title="Hide widget">◉</button>
+            </div>
+          </div>
+          <div class="widget-content">
+            <canvas id="progressTimelineChart"></canvas>
+          </div>
+        </div>
+
+        <div class="widget" data-widget-id="chart-weekly-comparison" data-widget-type="chart" data-widget-size="normal" draggable="true">
+          <div class="widget-header">
+            <h3>Weekly Comparison</h3>
+            <div class="widget-controls">
+              <button class="widget-btn size-btn" title="Change size">◬</button>
+              <button class="widget-btn hide-btn" title="Hide widget">◉</button>
+            </div>
+          </div>
+          <div class="widget-content">
+            <canvas id="weeklyComparisonChart"></canvas>
+          </div>
+        </div>
+
+        <div class="widget" data-widget-id="chart-category-progress" data-widget-type="chart" data-widget-size="normal" draggable="true">
+          <div class="widget-header">
+            <h3>Progress by Category</h3>
+            <div class="widget-controls">
+              <button class="widget-btn size-btn" title="Change size">◬</button>
+              <button class="widget-btn hide-btn" title="Hide widget">◉</button>
+            </div>
+          </div>
+          <div class="widget-content">
+            <canvas id="categoryProgressChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="achievements-section">
+        <h3 class="section-subtitle">🏆 Achievements</h3>
+        <div class="achievements-grid" id="achievements-grid"></div>
+      </div>
+
+      <div class="recent-activity-section">
+          <h3 class="section-subtitle">◈ Recent Activity</h3>
+        <div class="activity-list" id="activity-list"></div>
+      </div>
+    </section>
+
+    <!-- CALCULATOR -->
+    <section id="calculator">
+      <h2>Calculator</h2>
+
+      <div class="calculator-container">
+        <div class="calculator-main">
+          <div class="calculator-display">
+            <div class="calculator-history" id="calc-history"></div>
+            <div class="calculator-screen" id="calc-screen">0</div>
+          </div>
+          
+          <div class="calculator-buttons">
+            <button class="calc-btn calc-btn-function" data-action="clear">C</button>
+            <button class="calc-btn calc-btn-function" data-action="clear-entry">CE</button>
+            <button class="calc-btn calc-btn-function" data-action="backspace">⌫</button>
+            <button class="calc-btn calc-btn-operator" data-action="divide">÷</button>
+            
+            <button class="calc-btn calc-btn-number" data-value="7">7</button>
+            <button class="calc-btn calc-btn-number" data-value="8">8</button>
+            <button class="calc-btn calc-btn-number" data-value="9">9</button>
+            <button class="calc-btn calc-btn-operator" data-action="multiply">×</button>
+            
+            <button class="calc-btn calc-btn-number" data-value="4">4</button>
+            <button class="calc-btn calc-btn-number" data-value="5">5</button>
+            <button class="calc-btn calc-btn-number" data-value="6">6</button>
+            <button class="calc-btn calc-btn-operator" data-action="subtract">−</button>
+            
+            <button class="calc-btn calc-btn-number" data-value="1">1</button>
+            <button class="calc-btn calc-btn-number" data-value="2">2</button>
+            <button class="calc-btn calc-btn-number" data-value="3">3</button>
+            <button class="calc-btn calc-btn-operator" data-action="add">+</button>
+            
+            <button class="calc-btn calc-btn-function" data-action="negate">±</button>
+            <button class="calc-btn calc-btn-number" data-value="0">0</button>
+            <button class="calc-btn calc-btn-number" data-value=".">.</button>
+            <button class="calc-btn calc-btn-equals" data-action="equals">=</button>
+          </div>
+          
+          <div class="calculator-advanced">
+            <button class="calc-btn calc-btn-advanced" data-action="sqrt">√</button>
+            <button class="calc-btn calc-btn-advanced" data-action="square">x²</button>
+            <button class="calc-btn calc-btn-advanced" data-action="percent">%</button>
+            <button class="calc-btn calc-btn-advanced" data-action="inverse">1/x</button>
+          </div>
+        </div>
+
+        <div class="calculator-history-panel">
+          <h3 class="section-subtitle">◐ Calculation History</h3>
+          <div class="calc-history-list" id="calc-history-list">
+            <p style="text-align:center;padding:2rem;color:var(--text-light);">No calculations yet</p>
+          </div>
+          <button class="btn btn-danger" id="clear-history-btn" style="width:100%;margin-top:1rem;">Clear History</button>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- ===================== LOGIN MODAL ===================== -->
-  <div id="login-modal" class="modal hidden">
-    <div class="modal-content">
-      <h3>Login</h3>
-      <input type="text" id="login-email" placeholder="Email" />
-      <input type="password" id="login-password" placeholder="Password" />
-      <div class="modal-actions">
-        <button id="login-submit" class="primary">Login</button>
-        <button class="close-modal danger">Cancel</button>
-      </div>
-    </div>
-  </div>
+  <!-- MODALS -->
+  <div id="modal-container"></div>
 
-  <!-- ===================== REGISTER MODAL ===================== -->
-  <div id="register-modal" class="modal hidden">
-    <div class="modal-content">
-      <h3>Register</h3>
-
-      <input type="text" id="register-name" placeholder="Name (optional)" />
-      <input type="text" id="register-email" placeholder="Email" />
-      <input type="password" id="register-password" placeholder="Password" />
-
-      <div class="modal-actions">
-        <button id="register-submit" class="primary">Register</button>
-        <button class="close-modal danger">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===================== ACCOUNT MODAL ===================== -->
-  <div id="account-modal" class="modal hidden">
-    <div class="modal-content">
-      <h3>Account Settings</h3>
-
-      <label>Avatar</label>
-      <input type="file" id="profile-avatar" accept="image/*" />
-
-      <label>Name</label>
-      <input type="text" id="profile-name" />
-
-      <label>Email</label>
-      <input type="text" id="profile-email" />
-
-      <label>New Password</label>
-      <input type="password" id="profile-password" placeholder="Leave empty to keep current" />
-
-      <label>Language</label>
-      <select id="profile-language">
-        <option value="en">English</option>
-        <option value="es">Español</option>
-      </select>
-
-      <label>Time Format</label>
-      <select id="profile-timeformat">
-        <option value="24">24h</option>
-        <option value="12">12h</option>
-      </select>
-
-      <hr style="margin:12px 0;">
-
-      <button id="save-profile" class="primary" style="width:100%;">Save Changes</button>
-
-      <br><br>
-
-      <h4>Export / Import</h4>
-      <button id="export-user" class="primary" style="width:100%;">Export My Data</button>
-      <input type="file" id="import-user-file" accept="application/json" />
-
-      <br><br>
-
-      <button id="delete-account" class="danger" style="width:100%;">Delete Account</button>
-
-      <div class="modal-actions">
-        <button id="close-account" class="danger">Close</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="modal-backdrop" class="modal-backdrop hidden"></div>
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container" id="toast-container"></div>
 
   <script src="script.js"></script>
 </body>
